@@ -49,12 +49,7 @@ const presets: LocationResult[] = [
   { label: 'Новосибирск', latitude: 55.0084, longitude: 82.9357 },
 ]
 
-const dateTimeFormatter = new Intl.DateTimeFormat('ru-RU', {
-  day: 'numeric',
-  month: 'long',
-  hour: '2-digit',
-  minute: '2-digit',
-})
+// dateTimeFormatter removed (unused)
 
 const shortDayFormatter = new Intl.DateTimeFormat('ru-RU', {
   weekday: 'short',
@@ -296,7 +291,7 @@ function App() {
   const [weather, setWeather] = useState<WeatherResponse | null>(null)
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
-  const [lastUpdated, setLastUpdated] = useState<string>('')
+  
   const [localTimeLabel, setLocalTimeLabel] = useState<string>(hourFormatter.format(new Date()))
 
   const loadWeather = useCallback(async (targetLocation: LocationResult) => {
@@ -328,15 +323,6 @@ function App() {
 
       setLocation(targetLocation)
       setWeather(data)
-      setLastUpdated(
-        new Intl.DateTimeFormat('ru-RU', {
-          day: 'numeric',
-          month: 'long',
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: data.timezone,
-        }).format(new Date()),
-      )
       setStatus('ready')
     } catch (fetchError) {
       setStatus('error')
