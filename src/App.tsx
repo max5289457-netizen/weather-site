@@ -247,7 +247,9 @@ function App() {
   const [location, setLocation] = useState<LocationResult | null>(null)
   const [weather, setWeather] = useState<WeatherResponse | null>(null)
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
-  
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchError, setSearchError] = useState('')
+
   const [localTimeLabel, setLocalTimeLabel] = useState<string>(hourFormatter.format(new Date()))
 
   const loadWeather = useCallback(async (targetLocation: LocationResult) => {
@@ -279,10 +281,62 @@ function App() {
       setLocation(targetLocation)
       setWeather(data)
       setStatus('ready')
+      setSearchError('')
     } catch {
       setStatus('error')
     }
   }, [])
+
+  const searchCity = useCallback(async () => {
+    const trimmedQuery = searchQuery.trim()
+    if (!trimmedQuery) {
+      setSearchError('Введите название города')
+      return
+    }
+
+    setStatus('loading')
+
+    try {
+      const params = new URLSearchParams({
+        name: trimmedQuery,
+        count: '5',
+        language: 'ru',
+        format: 'json',
+      })
+
+      const response = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?${params.toString()}`,
+      )
+
+      if (!response.ok) {
+        throw new Error('Не удалось найти город')
+      }
+
+      const data = (await response.json()) as {
+        results?: Array<{
+          name: string
+          latitude: number
+          longitude: number
+        }>
+      }
+
+      const firstResult = data.results?.[0]
+      if (!firstResult) {
+        throw new Error('Город не найден')
+      }
+
+      await loadWeather({
+        label: firstResult.name,
+        latitude: firstResult.latitude,
+        longitude: firstResult.longitude,
+      })
+      setSearchQuery(firstResult.name)
+      setSearchError('')
+    } catch {
+      setStatus('error')
+      setSearchError('Не удалось найти такой город')
+    }
+  }, [loadWeather, searchQuery])
 
   const detectCurrentLocation = useCallback(
     async (options?: { silentOnFail?: boolean }) => {
@@ -345,12 +399,7 @@ function App() {
               cityParts.length > 0 ? [...cityParts, ...regionParts] : fallbackParts
 
             const primaryPlace = cityParts[0] || locationParts[0] || ''
-            const containsCityWord = /\b(город|gorod|city)\b/i.test(primaryPlace)
-            const labelText = primaryPlace
-              ? containsCityWord
-                ? `Вы сейчас в ${primaryPlace}`
-                : `Вы сейчас в городе ${primaryPlace}`
-              : 'Вы сейчас здесь'
+            const labelText = primaryPlace || 'Вы сейчас здесь'
 
             await loadWeather({
               label: labelText,
@@ -475,7 +524,7 @@ function App() {
       <header className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Weather Pulse</p>
-          <h1>Погода онлайн: прогноз погоды на сегодня, завтра и неделю</h1>
+          <h1>Погода онлайн на сегодня</h1>
           <p className="lead">
             Узнайте температуру воздуха, осадки, ветер, влажность и точный прогноз по любому городу.
           </p>
@@ -493,6 +542,47 @@ function App() {
               Показать Москву
             </button>
           </div>
+
+          <section className="search-card">
+            <div className="search-field">
+              <span>Поиск города</span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    void searchCity()
+                  }
+                }}
+                placeholder="Введите название города"
+              />
+            </div>
+            <div className="search-actions">
+              <button
+                className="primary-button"
+                type="button"
+                onClick={() => void searchCity()}
+                disabled={status === 'loading'}
+              >
+                Найти
+              </button>
+            </div>
+            <div className="preset-row">
+              {presets.map((preset) => (
+                <button
+                  key={preset.label}
+                  className="preset-chip"
+                  type="button"
+                  onClick={() => void loadWeather(preset)}
+                  disabled={status === 'loading'}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+            {searchError ? <p className="error-banner">{searchError}</p> : null}
+          </section>
         </div>
 
         <section className="panel hero-now">
@@ -535,7 +625,7 @@ function App() {
       </header>
 
       <main className="layout">
-        <section className="forecast-card panel">
+        <section className="forecast-card panel panel-wide">
           <div className="panel-header">
             <div>
               <p className="section-label">Часы</p>
