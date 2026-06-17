@@ -54,8 +54,11 @@
 
         if (redirect) {
           const normalized = redirect.replace(/^\/+/, '')
-          const target = normalized ? `/weather-site/${normalized}` : '/weather-site/'
-          window.history.replaceState(null, '', target)
+          const basePath = window.location.pathname.includes('/weather-site/')
+            ? '/weather-site'
+            : ''
+          const target = normalized ? `${basePath}/${normalized}` : `${basePath}/`
+          window.history.replaceState(null, '', target || '/')
         }
       })()
     </script>
