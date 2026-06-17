@@ -599,8 +599,10 @@ function App() {
       <header className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Weather Pulse</p>
-          <h1>Погода, как редакционный экран состояния города</h1>
-          <p className="lead">Быстрый поиск и понятный прогноз — всё, что нужно знать о погоде.</p>
+          <h1>Погода онлайн: прогноз погоды на сегодня, завтра и неделю</h1>
+          <p className="lead">
+            Узнайте температуру воздуха, осадки, ветер, влажность и точный прогноз по любому городу.
+          </p>
 
           <div className="hero-actions">
             <button
@@ -648,6 +650,23 @@ function App() {
       </header>
 
       <main className="layout">
+        <section className="panel panel-wide">
+          <div className="panel-header">
+            <div>
+              <p className="section-label">SEO</p>
+              <h2>Погода по городам и регионам</h2>
+            </div>
+          </div>
+          <p className="lead">
+            Weather Pulse помогает быстро узнать погоду онлайн: прогноз на сегодня, завтра и на неделю,
+            температуру воздуха, осадки, ветер, влажность и индекс UV для любого города.
+          </p>
+          <p>
+            Сервис подходит для поиска погоды по России и миру, проверки прогноза по городам,
+            а также для быстрого сравнения условий в разных населённых пунктах.
+          </p>
+        </section>
+
         <section className="search-panel panel">
           <div className="panel-header">
             <div>

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://max5289457-netizen.github.io/weather-site/sitemap.xml
