@@ -1,16 +1,8 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import './App.css'
 
 type LocationResult = {
   label: string
-  latitude: number
-  longitude: number
-}
-
-type SearchApiResult = {
-  name: string
-  country: string
-  admin1?: string
   latitude: number
   longitude: number
 }
@@ -118,40 +110,6 @@ const weatherIcon = (code: number, isDay: number) => {
   if (code >= 85 && code <= 86) return '🌨️'
   if (code >= 95) return '⛈️'
   return '🌍'
-}
-
-const getWeatherIconSVG = (code: number, isDay: number) => {
-  const sunSVG = '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><style>.sun-ray{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round}</style></defs><circle cx="32" cy="32" r="20" fill="currentColor" opacity="0.9"/><g class="sun-ray"><line x1="32" y1="8" x2="32" y2="2"/><line x1="32" y1="62" x2="32" y2="56"/><line x1="56" y1="32" x2="62" y2="32"/><line x1="8" y1="32" x2="2" y2="32"/><line x1="50" y1="14" x2="54" y2="10"/><line x1="14" y1="50" x2="10" y2="54"/><line x1="50" y1="50" x2="54" y2="54"/><line x1="14" y1="14" x2="10" y2="10"/></g></svg>'
-  
-  const moonSVG = '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><style>.moon-shadow{fill:#000;opacity:0.3}</style></defs><path d="M32 12c11 0 20 9 20 20s-9 20-20 20S12 43 12 32s9-20 20-20z" fill="currentColor"/><circle cx="42" cy="28" r="16" class="moon-shadow"/></svg>'
-  
-  const cloudySVG = '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M48 20c2.2 0 4-1.8 4-4s-1.8-4-4-4c-1.8 0-3.3 1.2-3.8 2.8C42.8 12 40.6 10 38 10c-3.3 0-6 2.7-6 6 0 .5.1 1 .2 1.5C30.4 16 28 14 25 14c-4.4 0-8 3.6-8 8 0 .7.1 1.4.3 2C15.3 24 12 27.6 12 32c0 5.5 4.5 10 10 10h26c5.5 0 10-4.5 10-10s-4.5-10-10-10z" fill="currentColor" opacity="0.85"/></svg>'
-  
-  const rainSVG = '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M48 20c2.2 0 4-1.8 4-4s-1.8-4-4-4c-1.8 0-3.3 1.2-3.8 2.8C42.8 12 40.6 10 38 10c-3.3 0-6 2.7-6 6 0 .5.1 1 .2 1.5C30.4 16 28 14 25 14c-4.4 0-8 3.6-8 8 0 .7.1 1.4.3 2C15.3 24 12 27.6 12 32c0 5.5 4.5 10 10 10h26c5.5 0 10-4.5 10-10s-4.5-10-10-10z" fill="currentColor" opacity="0.75"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="45" x2="16" y2="53"/><line x1="30" y1="45" x2="28" y2="53"/><line x1="42" y1="45" x2="40" y2="53"/></g></svg>'
-  
-  const snowSVG = '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M48 20c2.2 0 4-1.8 4-4s-1.8-4-4-4c-1.8 0-3.3 1.2-3.8 2.8C42.8 12 40.6 10 38 10c-3.3 0-6 2.7-6 6 0 .5.1 1 .2 1.5C30.4 16 28 14 25 14c-4.4 0-8 3.6-8 8 0 .7.1 1.4.3 2C15.3 24 12 27.6 12 32c0 5.5 4.5 10 10 10h26c5.5 0 10-4.5 10-10s-4.5-10-10-10z" fill="currentColor" opacity="0.75"/><g fill="currentColor"><circle cx="20" cy="47" r="2"/><circle cx="32" cy="47" r="2"/><circle cx="44" cy="47" r="2"/><circle cx="20" cy="56" r="2"/><circle cx="32" cy="56" r="2"/><circle cx="44" cy="56" r="2"/></g></svg>'
-  
-  const stormSVG = '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M48 20c2.2 0 4-1.8 4-4s-1.8-4-4-4c-1.8 0-3.3 1.2-3.8 2.8C42.8 12 40.6 10 38 10c-3.3 0-6 2.7-6 6 0 .5.1 1 .2 1.5C30.4 16 28 14 25 14c-4.4 0-8 3.6-8 8 0 .7.1 1.4.3 2C15.3 24 12 27.6 12 32c0 5.5 4.5 10 10 10h26c5.5 0 10-4.5 10-10s-4.5-10-10-10z" fill="currentColor" opacity="0.75"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="16" y1="46" x2="14" y2="54"/><line x1="28" y1="46" x2="26" y2="54"/><line x1="40" y1="46" x2="38" y2="54"/><polyline points="22,50 26,48 30,52" fill="none"/><polyline points="34,50 38,48 42,52" fill="none"/></g></svg>'
-  
-  const mistSVG = '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><g fill="currentColor" opacity="0.6"><rect x="12" y="20" width="40" height="3" rx="1.5"/><rect x="12" y="30" width="38" height="3" rx="1.5"/><rect x="12" y="40" width="40" height="3" rx="1.5"/><rect x="12" y="50" width="36" height="3" rx="1.5"/></g></svg>'
-  
-  if (code === 0) return isDay ? sunSVG : moonSVG
-  if (code === 1) return isDay ? sunSVG : moonSVG
-  if (code === 2) return cloudySVG
-  if (code === 3) return cloudySVG
-  if (code === 45 || code === 48) return mistSVG
-  if (code >= 51 && code <= 57) return rainSVG
-  if (code >= 61 && code <= 67) return rainSVG
-  if (code >= 71 && code <= 77) return snowSVG
-  if (code >= 80 && code <= 82) return rainSVG
-  if (code >= 85 && code <= 86) return snowSVG
-  if (code >= 95) return stormSVG
-  return cloudySVG
-}
-
-const formatLocationLabel = (result: SearchApiResult) => {
-  const parts = [result.name, result.admin1, result.country].filter(Boolean)
-  return parts.join(', ')
 }
 
 type IpLocationCandidate = {
@@ -286,17 +244,14 @@ const resolveIpLocation = async (): Promise<LocationResult | null> => {
 
 
 function App() {
-  const [query, setQuery] = useState('')
   const [location, setLocation] = useState<LocationResult | null>(null)
   const [weather, setWeather] = useState<WeatherResponse | null>(null)
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
-  const [error, setError] = useState<string | null>(null)
   
   const [localTimeLabel, setLocalTimeLabel] = useState<string>(hourFormatter.format(new Date()))
 
   const loadWeather = useCallback(async (targetLocation: LocationResult) => {
     setStatus('loading')
-    setError(null)
 
     try {
       const params = new URLSearchParams({
@@ -324,72 +279,14 @@ function App() {
       setLocation(targetLocation)
       setWeather(data)
       setStatus('ready')
-    } catch (fetchError) {
+    } catch {
       setStatus('error')
-      setError(
-        fetchError instanceof Error
-          ? fetchError.message
-          : 'Не удалось загрузить прогноз погоды',
-      )
     }
   }, [])
-
-  const searchCity = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    const trimmedQuery = query.trim()
-
-    if (!trimmedQuery) {
-      setError('Введите название города')
-      return
-    }
-
-    setStatus('loading')
-    setError(null)
-
-    try {
-      const searchParams = new URLSearchParams({
-        name: trimmedQuery,
-        count: '1',
-        language: 'ru',
-        format: 'json',
-      })
-
-      const response = await fetch(
-        `https://geocoding-api.open-meteo.com/v1/search?${searchParams.toString()}`,
-      )
-
-      if (!response.ok) {
-        throw new Error('Не удалось найти город')
-      }
-
-      const data = (await response.json()) as {
-        results?: SearchApiResult[]
-      }
-
-      const result = data.results?.[0]
-
-      if (!result) {
-        throw new Error('Город не найден. Попробуйте другой запрос')
-      }
-
-      await loadWeather({
-        label: formatLocationLabel(result),
-        latitude: result.latitude,
-        longitude: result.longitude,
-      })
-    } catch (searchError) {
-      setStatus('error')
-      setError(
-        searchError instanceof Error ? searchError.message : 'Не удалось найти город',
-      )
-    }
-  }
 
   const detectCurrentLocation = useCallback(
     async (options?: { silentOnFail?: boolean }) => {
       const silentOnFail = options?.silentOnFail ?? false
-      setError(null)
 
       if (!navigator.geolocation) {
         if (silentOnFail) {
@@ -397,7 +294,6 @@ function App() {
           return
         }
 
-        setError('Геолокация не поддерживается в этом браузере')
         setStatus('error')
         return
       }
@@ -461,18 +357,13 @@ function App() {
               latitude: coords.latitude,
               longitude: coords.longitude,
             })
-          } catch (locationError) {
+          } catch {
             if (silentOnFail) {
               setStatus('idle')
               return
             }
 
             setStatus('error')
-            setError(
-              locationError instanceof Error
-                ? locationError.message
-                : 'Не удалось определить ваше местоположение',
-            )
           }
         },
         async () => {
@@ -484,18 +375,13 @@ function App() {
             }
 
             await loadWeather(remoteLocation)
-          } catch (locationError) {
+          } catch {
             if (silentOnFail) {
               setStatus('idle')
               return
             }
 
             setStatus('error')
-            setError(
-              locationError instanceof Error
-                ? locationError.message
-                : 'Не удалось определить ваше местоположение',
-            )
           }
         },
         {
@@ -541,6 +427,7 @@ function App() {
     ? weatherLabel(weather.current.weather_code)
     : 'Выберите город или дождитесь определения локации'
   const currentLocalTime = localTimeLabel || hourFormatter.format(new Date())
+
   const hourlyStartIndex = weather
     ? (() => {
         const currentDate = parseApiLocalDate(weather.current.time)
@@ -551,45 +438,34 @@ function App() {
         }
 
         const nextHourIndex = weather.hourly.time.findIndex((time) => {
-          const parsedHour = parseApiLocalDate(time)
-          return parsedHour.getTime() > currentDate.getTime()
+          const parsedTime = parseApiLocalDate(time)
+          return parsedTime.getTime() > currentDate.getTime()
         })
 
         return nextHourIndex !== -1 ? nextHourIndex : 0
       })()
     : 0
 
-  const hourlyForecast = weather
-    ? weather.hourly.time
-        .slice(hourlyStartIndex, hourlyStartIndex + 6)
-        .map((time, index) => {
-          return {
-            time,
-            temperature: weather.hourly.temperature_2m[hourlyStartIndex + index],
-            weatherCode: weather.hourly.weather_code[hourlyStartIndex + index],
-            precipitation: weather.hourly.precipitation_probability[hourlyStartIndex + index],
-          }
-        })
-    : []
+  const hourlyForecast =
+    weather && weather.hourly?.time?.length
+      ? weather.hourly.time.slice(hourlyStartIndex, hourlyStartIndex + 6).map((time, index) => ({
+          time,
+          temperature: weather.hourly.temperature_2m[hourlyStartIndex + index],
+          weatherCode: weather.hourly.weather_code[hourlyStartIndex + index],
+          precipitation: weather.hourly.precipitation_probability[hourlyStartIndex + index],
+        }))
+      : []
 
-  const dailyForecast = weather
-    ? weather.daily.time.slice(0, 7).map((time, index) => ({
-        time,
-        weatherCode: weather.daily.weather_code[index],
-        temperatureMax: weather.daily.temperature_2m_max[index],
-        temperatureMin: weather.daily.temperature_2m_min[index],
-        precipitation: weather.daily.precipitation_sum[index],
-      }))
-    : []
-
-  const statusText =
-    status === 'loading'
-      ? 'Обновляю прогноз'
-      : status === 'ready'
-        ? ''
-        : status === 'error'
-          ? 'Есть проблема с загрузкой'
-          : 'Готов к поиску'
+  const dailyForecast =
+    weather && weather.daily?.time?.length
+      ? weather.daily.time.slice(0, 7).map((time, index) => ({
+          time,
+          weatherCode: weather.daily.weather_code[index],
+          temperatureMax: weather.daily.temperature_2m_max[index],
+          temperatureMin: weather.daily.temperature_2m_min[index],
+          precipitation: weather.daily.precipitation_sum[index],
+        }))
+      : []
 
   return (
     <div className="app-shell">
@@ -619,112 +495,7 @@ function App() {
           </div>
         </div>
 
-        <aside className="hero-aside" aria-live="polite">
-          <div className="status-card merged-status">
-            <div className="status-info">
-              {statusText ? <span className="status-badge">{statusText}</span> : null}
-              <strong>{currentLabel}</strong>
-              {/* lastUpdated removed per UI preference */}
-            </div>
-
-            <div className="status-visual">
-              {weather ? (
-                <svg
-                  viewBox="0 0 64 64"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="weather-svg"
-                  dangerouslySetInnerHTML={{ __html: getWeatherIconSVG(weather.current.weather_code, weather.current.is_day) }}
-                />
-              ) : (
-                <svg
-                  viewBox="0 0 64 64"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="weather-svg"
-                  dangerouslySetInnerHTML={{ __html: '<path d="M48 20c2.2 0 4-1.8 4-4s-1.8-4-4-4c-1.8 0-3.3 1.2-3.8 2.8C42.8 12 40.6 10 38 10c-3.3 0-6 2.7-6 6 0 .5.1 1 .2 1.5C30.4 16 28 14 25 14c-4.4 0-8 3.6-8 8 0 .7.1 1.4.3 2C15.3 24 12 27.6 12 32c0 5.5 4.5 10 10 10h26c5.5 0 10-4.5 10-10s-4.5-10-10-10z" fill="currentColor" opacity="0.85"/>' }}
-                />
-              )}
-              <p className="status-visual-caption">{currentCondition}</p>
-            </div>
-          </div>
-        </aside>
-      </header>
-
-      <main className="layout">
-        <section className="panel panel-wide">
-          <div className="panel-header">
-            <div>
-              <p className="section-label">SEO</p>
-              <h2>Погода по городам и регионам</h2>
-            </div>
-          </div>
-          <p className="lead">
-            Weather Pulse помогает быстро узнать погоду онлайн: прогноз на сегодня, завтра и на неделю,
-            температуру воздуха, осадки, ветер, влажность и индекс UV для любого города.
-          </p>
-          <p>
-            Сервис подходит для поиска погоды по России и миру, проверки прогноза по городам,
-            а также для быстрого сравнения условий в разных населённых пунктах.
-          </p>
-        </section>
-
-        <section className="search-panel panel">
-          <div className="panel-header">
-            <div>
-              <p className="section-label">Поиск</p>
-              <h2>Найти другой город</h2>
-            </div>
-            {/* panel note removed */}
-          </div>
-
-          <form className="search-card" onSubmit={searchCity}>
-            <label className="search-field" htmlFor="city-search">
-              <span>Город</span>
-              <input
-                id="city-search"
-                name="city-search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Сочи, Алматы, Warsaw"
-                autoComplete="off"
-              />
-            </label>
-
-            <div className="search-actions">
-              <button className="primary-button" type="submit" disabled={status === 'loading'}>
-                Найти
-              </button>
-              <button
-                className="secondary-button"
-                type="button"
-                onClick={() => void detectCurrentLocation()}
-                disabled={status === 'loading'}
-              >
-                Моё местоположение
-              </button>
-            </div>
-          </form>
-
-          <div className="preset-row" aria-label="Быстрый выбор города">
-            {presets.map((preset) => (
-              <button
-                key={preset.label}
-                className="preset-chip"
-                type="button"
-                onClick={() => {
-                  setQuery(preset.label)
-                  void loadWeather(preset)
-                }}
-                disabled={status === 'loading'}
-              >
-                {preset.label}
-              </button>
-            ))}
-          </div>
-
-          {error ? <div className="error-banner">{error}</div> : null}
-        </section>
-
-        <section className="current-card panel">
+        <section className="panel hero-now">
           <div className="current-header">
             <div>
               <p className="section-label">Сейчас</p>
@@ -761,7 +532,9 @@ function App() {
             </article>
           </div>
         </section>
+      </header>
 
+      <main className="layout">
         <section className="forecast-card panel">
           <div className="panel-header">
             <div>
