@@ -285,7 +285,7 @@ html, body, .app-shell {
 
 .forecast-card {
   grid-column: 1;
-  min-height: 560px;
+  min-height: 520px;
 }
 
 .panel-wide {
@@ -483,7 +483,7 @@ html, body, .app-shell {
   display: grid;
   gap: 12px;
   margin-top: 18px;
-  align-content: stretch;
+  align-content: start;
 }
 
 .timeline-row,
@@ -495,7 +495,7 @@ html, body, .app-shell {
   gap: 16px;
   align-items: center;
   background: rgba(9, 15, 30, 0.6);
-  min-height: 78px;
+  min-height: 72px;
 }
 
 .timeline-time,
