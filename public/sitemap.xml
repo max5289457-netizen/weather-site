@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://max5289457-netizen.github.io/weather-site/</loc>
+    <loc>https://weather-site-ten-beryl.vercel.app/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://max5289457-netizen.github.io/weather-site/city/moskva</loc>
+    <loc>https://weather-site-ten-beryl.vercel.app/city/moskva</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://max5289457-netizen.github.io/weather-site/city/sankt-peterburg</loc>
+    <loc>https://weather-site-ten-beryl.vercel.app/city/sankt-peterburg</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://max5289457-netizen.github.io/weather-site/city/kazan</loc>
+    <loc>https://weather-site-ten-beryl.vercel.app/city/kazan</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://max5289457-netizen.github.io/weather-site/city/novosibirsk</loc>
+    <loc>https://weather-site-ten-beryl.vercel.app/city/novosibirsk</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://max5289457-netizen.github.io/weather-site/city/sochi</loc>
+    <loc>https://weather-site-ten-beryl.vercel.app/city/sochi</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://max5289457-netizen.github.io/weather-site/city/ekaterinburg</loc>
+    <loc>https://weather-site-ten-beryl.vercel.app/city/ekaterinburg</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
