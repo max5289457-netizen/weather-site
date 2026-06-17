@@ -47,6 +47,18 @@
     </script>
   </head>
   <body>
+    <script>
+      ;(function () {
+        const params = new URLSearchParams(window.location.search)
+        const redirect = params.get('redirect')
+
+        if (redirect) {
+          const normalized = redirect.replace(/^\/+/, '')
+          const target = normalized ? `/weather-site/${normalized}` : '/weather-site/'
+          window.history.replaceState(null, '', target)
+        }
+      })()
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

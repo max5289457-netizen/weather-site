@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <script>
+      ;(function () {
+        const current = new URL(window.location.href)
+        const basePath = '/weather-site/'
+        const base = new URL(basePath, current.origin)
+
+        const relativePath = current.pathname.replace(/^\/weather-site/, '') || '/'
+        const redirectPath = relativePath !== '/' ? relativePath.replace(/^\/+/, '') : ''
+
+        if (current.pathname === base.pathname || current.pathname === base.pathname.replace(/\/$/, '')) {
+          return
+        }
+
+        const redirectUrl = new URL(base)
+        if (redirectPath) {
+          redirectUrl.searchParams.set('redirect', redirectPath)
+        }
+        window.location.replace(redirectUrl.toString())
+      })()
+    </script>
+  </body>
+</html>
