@@ -107,6 +107,15 @@ html, body, .app-shell {
   background-clip: padding-box;
 }
 
+.hero-illustration {
+  width: min(100%, 320px);
+  height: auto;
+  display: block;
+  border-radius: 22px;
+  object-fit: cover;
+  margin: 0 auto 10px;
+}
+
 .hero-copy {
   border-radius: 34px;
   padding: 32px;

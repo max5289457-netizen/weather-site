@@ -1,16 +1,9 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import './App.css'
+import heroIllustration from './assets/hero.png'
 
 type LocationResult = {
   label: string
-  latitude: number
-  longitude: number
-}
-
-type SearchApiResult = {
-  name: string
-  country: string
-  admin1?: string
   latitude: number
   longitude: number
 }
@@ -149,11 +142,6 @@ const getWeatherIconSVG = (code: number, isDay: number) => {
   return cloudySVG
 }
 
-const formatLocationLabel = (result: SearchApiResult) => {
-  const parts = [result.name, result.admin1, result.country].filter(Boolean)
-  return parts.join(', ')
-}
-
 type IpLocationCandidate = {
   latitude?: number
   longitude?: number
@@ -286,17 +274,14 @@ const resolveIpLocation = async (): Promise<LocationResult | null> => {
 
 
 function App() {
-  const [query, setQuery] = useState('')
   const [location, setLocation] = useState<LocationResult | null>(null)
   const [weather, setWeather] = useState<WeatherResponse | null>(null)
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
-  const [error, setError] = useState<string | null>(null)
-  
+
   const [localTimeLabel, setLocalTimeLabel] = useState<string>(hourFormatter.format(new Date()))
 
   const loadWeather = useCallback(async (targetLocation: LocationResult) => {
     setStatus('loading')
-    setError(null)
 
     try {
       const params = new URLSearchParams({
@@ -324,72 +309,14 @@ function App() {
       setLocation(targetLocation)
       setWeather(data)
       setStatus('ready')
-    } catch (fetchError) {
+    } catch {
       setStatus('error')
-      setError(
-        fetchError instanceof Error
-          ? fetchError.message
-          : 'Не удалось загрузить прогноз погоды',
-      )
     }
   }, [])
-
-  const searchCity = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    const trimmedQuery = query.trim()
-
-    if (!trimmedQuery) {
-      setError('Введите название города')
-      return
-    }
-
-    setStatus('loading')
-    setError(null)
-
-    try {
-      const searchParams = new URLSearchParams({
-        name: trimmedQuery,
-        count: '1',
-        language: 'ru',
-        format: 'json',
-      })
-
-      const response = await fetch(
-        `https://geocoding-api.open-meteo.com/v1/search?${searchParams.toString()}`,
-      )
-
-      if (!response.ok) {
-        throw new Error('Не удалось найти город')
-      }
-
-      const data = (await response.json()) as {
-        results?: SearchApiResult[]
-      }
-
-      const result = data.results?.[0]
-
-      if (!result) {
-        throw new Error('Город не найден. Попробуйте другой запрос')
-      }
-
-      await loadWeather({
-        label: formatLocationLabel(result),
-        latitude: result.latitude,
-        longitude: result.longitude,
-      })
-    } catch (searchError) {
-      setStatus('error')
-      setError(
-        searchError instanceof Error ? searchError.message : 'Не удалось найти город',
-      )
-    }
-  }
 
   const detectCurrentLocation = useCallback(
     async (options?: { silentOnFail?: boolean }) => {
       const silentOnFail = options?.silentOnFail ?? false
-      setError(null)
 
       if (!navigator.geolocation) {
         if (silentOnFail) {
@@ -397,7 +324,6 @@ function App() {
           return
         }
 
-        setError('Геолокация не поддерживается в этом браузере')
         setStatus('error')
         return
       }
@@ -461,18 +387,13 @@ function App() {
               latitude: coords.latitude,
               longitude: coords.longitude,
             })
-          } catch (locationError) {
+          } catch {
             if (silentOnFail) {
               setStatus('idle')
               return
             }
 
             setStatus('error')
-            setError(
-              locationError instanceof Error
-                ? locationError.message
-                : 'Не удалось определить ваше местоположение',
-            )
           }
         },
         async () => {
@@ -484,18 +405,13 @@ function App() {
             }
 
             await loadWeather(remoteLocation)
-          } catch (locationError) {
+          } catch {
             if (silentOnFail) {
               setStatus('idle')
               return
             }
 
             setStatus('error')
-            setError(
-              locationError instanceof Error
-                ? locationError.message
-                : 'Не удалось определить ваше местоположение',
-            )
           }
         },
         {
@@ -621,6 +537,12 @@ function App() {
 
         <aside className="hero-aside" aria-live="polite">
           <div className="status-card merged-status">
+            <img
+              className="hero-illustration"
+              src={heroIllustration}
+              alt="Погодная иллюстрация"
+            />
+
             <div className="status-info">
               {statusText ? <span className="status-badge">{statusText}</span> : null}
               <strong>{currentLabel}</strong>
@@ -650,80 +572,6 @@ function App() {
       </header>
 
       <main className="layout">
-        <section className="panel panel-wide">
-          <div className="panel-header">
-            <div>
-              <p className="section-label">SEO</p>
-              <h2>Погода по городам и регионам</h2>
-            </div>
-          </div>
-          <p className="lead">
-            Weather Pulse помогает быстро узнать погоду онлайн: прогноз на сегодня, завтра и на неделю,
-            температуру воздуха, осадки, ветер, влажность и индекс UV для любого города.
-          </p>
-          <p>
-            Сервис подходит для поиска погоды по России и миру, проверки прогноза по городам,
-            а также для быстрого сравнения условий в разных населённых пунктах.
-          </p>
-        </section>
-
-        <section className="search-panel panel">
-          <div className="panel-header">
-            <div>
-              <p className="section-label">Поиск</p>
-              <h2>Найти другой город</h2>
-            </div>
-            {/* panel note removed */}
-          </div>
-
-          <form className="search-card" onSubmit={searchCity}>
-            <label className="search-field" htmlFor="city-search">
-              <span>Город</span>
-              <input
-                id="city-search"
-                name="city-search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Сочи, Алматы, Warsaw"
-                autoComplete="off"
-              />
-            </label>
-
-            <div className="search-actions">
-              <button className="primary-button" type="submit" disabled={status === 'loading'}>
-                Найти
-              </button>
-              <button
-                className="secondary-button"
-                type="button"
-                onClick={() => void detectCurrentLocation()}
-                disabled={status === 'loading'}
-              >
-                Моё местоположение
-              </button>
-            </div>
-          </form>
-
-          <div className="preset-row" aria-label="Быстрый выбор города">
-            {presets.map((preset) => (
-              <button
-                key={preset.label}
-                className="preset-chip"
-                type="button"
-                onClick={() => {
-                  setQuery(preset.label)
-                  void loadWeather(preset)
-                }}
-                disabled={status === 'loading'}
-              >
-                {preset.label}
-              </button>
-            ))}
-          </div>
-
-          {error ? <div className="error-banner">{error}</div> : null}
-        </section>
-
         <section className="current-card panel">
           <div className="current-header">
             <div>
